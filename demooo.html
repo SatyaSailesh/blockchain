@@ -91,6 +91,28 @@
             font-size: 0.9rem;
             color: #fff;
         }
+
+        /* Style for the thank you button */
+        .thank-you-button {
+          position: fixed; /* Fixed position */
+          bottom: 20px; /* Distance from the bottom */
+          right: 20px; /* Distance from the right */
+        }
+
+        /* Notification Styles */
+        .notification {
+          position: fixed; 
+          bottom: 30px; 
+          left: calc(50% - 150px); /* Center horizontally */
+          background-color: rgba(255,255,255,0.9); /* White background with transparency */
+          color: black; 
+          padding: 15px; 
+          border-radius: 5px; 
+          box-shadow: 0px 4px 10px rgba(0,0,0,0.5); 
+          display:none; /* Initially hidden */
+          z-index:100; /* Ensure it's on top of other elements */
+          transition: opacity 0.5s ease-in-out; /* Smooth transition */
+        }
     </style>
 </head>
 <body>
@@ -113,79 +135,102 @@
             <h2>Blockchain Visualization</h2>
             <div id="blockchain"></div>
         </div>
+
+        <!-- Thank You Button -->
+        <a href="thankyou.html" class="thank-you-button">
+          <button>Go to Thank You Page</button>
+        </a>
+
     </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="notification"></div>
 
     <footer>&copy; 2025 Blockchain Voting System. All Rights Reserved.</footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const blockchain = [];
-            const votesCount = JSON.parse(localStorage.getItem("votesCount")) || { "Candidate A": 0, "Candidate B": 0, "Candidate C": 0 };
-            updateVoteCounts();
+           const blockchain = [];
+           const votesCount = JSON.parse(localStorage.getItem("votesCount")) || { "Candidate A": 0, "Candidate B": 0, "Candidate C": 0 };
+           updateVoteCounts();
 
-            function createBlock(vote) {
-                const index = blockchain.length + 1;
-                const timestamp = new Date().toLocaleString();
-                const previousHash = blockchain.length > 0 ? blockchain[blockchain.length - 1].hash : "0000000000";
-                const block = { index, timestamp, vote, previousHash };
-                block.hash = generateHash(block);
-                return block;
-            }
+           function createBlock(vote) {
+               const index = blockchain.length + 1; 
+               const timestamp = new Date().toLocaleString();
+               const previousHash = blockchain.length > 0 ? blockchain[blockchain.length - 1].hash : "00000000000000000000000000000000000000000000000000000000000000000";
+               const block = { index, timestamp, vote, previousHash };
+               block.hash = generateHash(block); 
+               return block; 
+           }
 
-            function generateHash(block) {
-                const blockData = `${block.index}-${block.timestamp}-${block.vote}-${block.previousHash}`;
-                return btoa(blockData).slice(0, 10); // Simulate a hash
-            }
+           function generateHash(block) {
+               const blockData = `${block.index}-${block.timestamp}-${block.vote}-${block.previousHash}`;
+               return btoa(blockData).slice(0,10); // Simulate a hash
+           }
 
-            function castVote(candidate) {
-                if (!votesCount.hasOwnProperty(candidate)) {
-                    alert("Invalid candidate!");
-                    return;
-                }
+           function showNotification(message) {
+               const notification = document.getElementById("notification");
+               notification.textContent = message; // Set the message
+               notification.style.display = "block"; // Show the notification
+               setTimeout(() => {
+                   notification.style.opacity = "1"; // Fade in
+                   setTimeout(() => {
+                       notification.style.opacity = "0"; // Fade out
+                       setTimeout(() => {
+                           notification.style.display = "none"; // Hide after fading out
+                       }, 500); // Wait for fade out to complete
+                   }, 2000); // Show for a while before fading out
+               },100);
+           }
 
-                // Prevent double voting
-                if (localStorage.getItem("hasVoted")) {
-                    alert("You have already voted! No double voting allowed.");
-                    return;
-                }
+           function castVote(candidate) {
+               if (!votesCount.hasOwnProperty(candidate)) {
+                   showNotification("Invalid candidate!");
+                   return; 
+               }
+               
+               if (localStorage.getItem("hasVoted")) {
+                   showNotification("You have already voted! No double voting allowed.");
+                   return; 
+               }
+               
+               votesCount[candidate]++;
+               localStorage.setItem("hasVoted", "true");
+               localStorage.setItem("votesCount", JSON.stringify(votesCount));
 
-                votesCount[candidate]++;
-                localStorage.setItem("hasVoted", "true"); // Prevent voting again
-                localStorage.setItem("votesCount", JSON.stringify(votesCount)); // Store vote count
+               const block = createBlock(candidate); 
+               blockchain.push(block);
+               showNotification(`You voted for ${candidate}.`);
 
-                const block = createBlock(candidate);
-                blockchain.push(block);
-                alert(`You voted for ${candidate}.`);
+               updateVoteCounts();
+               renderBlockchain();
+           }
 
-                updateVoteCounts();
-                renderBlockchain();
-            }
+           function updateVoteCounts() {
+               document.getElementById("countA").textContent = votesCount["Candidate A"];
+               document.getElementById("countB").textContent = votesCount["Candidate B"];
+               document.getElementById("countC").textContent = votesCount["Candidate C"];
+           }
 
-            function updateVoteCounts() {
-                document.getElementById("countA").textContent = votesCount["Candidate A"];
-                document.getElementById("countB").textContent = votesCount["Candidate B"];
-                document.getElementById("countC").textContent = votesCount["Candidate C"];
-            }
+           function renderBlockchain() {
+               const blockchainDiv = document.getElementById("blockchain");
+               blockchainDiv.innerHTML = ""; // Clear previous visualization
+               blockchain.forEach(block => {
+                   const blockDiv = document.createElement("div");
+                   blockDiv.classList.add("block");
+                   blockDiv.innerHTML = `
+                       <h3>Block #${block.index}</h3>
+                       <p><strong>Timestamp:</strong> ${block.timestamp}</p>
+                       <p><strong>Vote:</strong> ${block.vote}</p>
+                       <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
+                       <p><strong>Hash:</strong> ${block.hash}</p>
+                   `;
+                   blockchainDiv.appendChild(blockDiv);
+               });
+           }
 
-            function renderBlockchain() {
-                const blockchainDiv = document.getElementById("blockchain");
-                blockchainDiv.innerHTML = ""; // Clear previous visualization
-                blockchain.forEach(block => {
-                    const blockDiv = document.createElement("div");
-                    blockDiv.classList.add("block");
-                    blockDiv.innerHTML = `
-                        <h3>Block #${block.index}</h3>
-                        <p><strong>Timestamp:</strong> ${block.timestamp}</p>
-                        <p><strong>Vote:</strong> ${block.vote}</p>
-                        <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
-                        <p><strong>Hash:</strong> ${block.hash}</p>
-                    `;
-                    blockchainDiv.appendChild(blockDiv);
-                });
-            }
-
-            window.castVote = castVote; // Make function accessible globally
-        });
+           window.castVote = castVote; // Make function accessible globally
+       });
     </script>
 </body>
 </html>
