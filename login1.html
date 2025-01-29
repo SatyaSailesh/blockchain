@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Voting Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('voteback.jpg'); /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            color: #fff;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 50px;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 1000;
+            gap: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #00d1b2;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            display: inline;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            color: white;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .navbar ul li a:hover {
+            background: #00d1b2;
+            transform: scale(1.1);
+        }
+
+        /* Language Selector */
+        .language-select {
+            position: absolute;
+            top: 90px;
+            right: 10px;
+            padding: 10px;
+            background: rgb(254, 255, 255);
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .language-select select {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+
+        /* Welcome Heading */
+        .welcome-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #00d1b2;
+            margin: 150px 0 20px 50px;
+            animation: fadeIn 1s ease;
+        }
+
+        /* Login Box */
+        .login-container {
+            background: rgba(21, 20, 20, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            margin: 20px 0 0 50px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        .login-heading {
+            font-size: 1.8rem;
+            color: #00d1b2;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            background-color: #00d1b2;
+        }
+
+        .login-button {
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #00d1b2;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .forgot-password a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            color: #00d1b2;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="Blockchain Voting Logo"> <!-- Replace with your logo file -->
+            <span>Blockchain Voting</span>
+        </div>
+        <ul>
+            <li><a href="#" id="nav-home">Home</a></li>
+            <li><a href="#" id="nav-about">About</a></li>
+            <li><a href="#" id="nav-services">Services</a></li>
+            <li><a href="#" id="nav-help">Help</a></li>
+            <li><a href="#" id="nav-contact">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Language Selector -->
+    <div class="language-select">
+        <select id="language-select" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="te">తెలుగు</option>
+            <option value="ta">தமிழ்</option>
+        </select>
+    </div>
+
+    <!-- Welcome Heading -->
+    <h1 class="welcome-heading" id="welcome-heading">WELCOME TO BLOCKCHAIN VOTING</h1>
+
+    <!-- Login Box -->
+    <div class="login-container">
+        <h2 class="login-heading" id="login-heading">Login</h2>
+        <input type="text" class="input-field" placeholder="Enter your username" id="username" required>
+        <input type="password" class="input-field" placeholder="Enter your password" id="password" required>
+        <button class="login-button" onclick="login()">
+            <span id="login-button-text">Login</span>
+        </button>
+        <div class="forgot-password">
+            <a href="#" id="forgot-password">Forgot Password?</a>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                "navbar-title": "BLOCK VOTES",
+                "nav-home": "Home",
+                "nav-about": "About",
+                "nav-services": "Services",
+                "nav-help": "Help",
+                "nav-contact": "Contact Us",
+                "welcome-heading": "WELCOME TO BLOCKCHAIN VOTING",
+                "login-heading": "Login",
+                "login-button": "Login",
+                "forgot-password": "Forgot Password?"
+            },
+            hi: {
+                "navbar-title": "ब्लॉकचेन मतदान",
+                "nav-home": "मुख्य पृष्ठ",
+                "nav-about": "हमारे बारे में",
+                "nav-services": "सेवाएं",
+                "nav-help": "सहायता",
+                "nav-contact": "संपर्क करें",
+                "welcome-heading": "ब्लॉकचेन मतदान में स्वागत है",
+                "login-heading": "लॉगिन करें",
+                "login-button": "लॉगिन करें",
+                "forgot-password": "पासवर्ड भूल गए?"
+            },
+            te: {
+                "navbar-title": "బ్లాక్‌చెయిన్ ఓటింగ్",
+                "nav-home": "హోం",
+                "nav-about": "గురించీ",
+                "nav-services": "సేవలు",
+                "nav-help": "సహాయం",
+                "nav-contact": "సంప్రదించండి",
+                "welcome-heading": "బ్లాక్‌చెయిన్ ఓటింగ్‌కు స్వాగతం",
+                "login-heading": "ప్రవేశించు",
+                "login-button": "ప్రవేశించు",
+                "forgot-password": "పాస్వర్డ్ మర్చిపోయారా?"
+            },
+            ta: {
+                "navbar-title": "பிளாக்செயின் வாக்குப்பதிவு",
+                "nav-home": "முகப்பு",
+                "nav-about": "பற்றிய",
+                "nav-services": "சேவைகள்",
+                "nav-help": "உதவி",
+                "nav-contact": "தொடர்பு கொள்ளுங்கள்",
+                "welcome-heading": "பிளாக்செயின் வாக்குப்பதிவுக்கு வரவேற்கின்றேன்",
+                "login-heading": "உள்நுழையவும்",
+                "login-button": "உள்நுழையவும்",
+                "forgot-password": "கடவுச்சொல்லை மறந்துவிட்டீர்களா?"
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById("language-select").value;
+            const selectedLang = translations[lang];
+
+            // Update navbar links
+            document.querySelector('.navbar .logo span').textContent = selectedLang["navbar-title"];
+            document.querySelectorAll('.navbar ul li a').forEach((item, index) => {
+                const navKeys = ['nav-home', 'nav-about', 'nav-services', 'nav-help', 'nav-contact'];
+                item.textContent = selectedLang[navKeys[index]];
+            });
+
+            // Update welcome heading
+            document.getElementById('welcome-heading').textContent = selectedLang["welcome-heading"];
+
+            // Update login heading
+            document.getElementById('login-heading').textContent = selectedLang["login-heading"];
+
+            // Update button text
+            document.getElementById('login-button-text').textContent = selectedLang["login-button"];
+
+            // Update forgot password text
+            document.getElementById('forgot-password').textContent = selectedLang["forgot-password"];
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                alert("Login Successful!");
+                window.location.href = 'demooo1.html'; // Redirect to the voting page after login
+            } else {
+                alert("Please enter both username and password.");
+            }
+        }
+
+        // Initialize default language
+        changeLanguage();
+    </script>
+
+</body>
+</html>
