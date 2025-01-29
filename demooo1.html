@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Voting System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('block.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0d6efd;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #00d1b2;
+        }
+
+        .vote-buttons {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #0d6efd, #00d1b2);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .blockchain-section {
+            margin-top: 20px;
+        }
+
+        #blockchain {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .block {
+            background: #fff;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 200px;
+        }
+
+        .vote-count {
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Voting System</h1>
+        <h2>Vote for Your Candidate</h2>
+        
+        <div class="vote-buttons">
+            <button onclick="castVote('Candidate A')">Vote for Candidate A</button>
+            <button onclick="castVote('Candidate B')">Vote for Candidate B</button>
+            <button onclick="castVote('Candidate C')">Vote for Candidate C</button>
+        </div>
+
+        <h2>Live Vote Count</h2>
+        <p class="vote-count">Candidate A: <span id="countA">0</span></p>
+        <p class="vote-count">Candidate B: <span id="countB">0</span></p>
+        <p class="vote-count">Candidate C: <span id="countC">0</span></p>
+
+        <div class="blockchain-section">
+            <h2>Blockchain Visualization</h2>
+            <div id="blockchain"></div>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 Blockchain Voting System. All Rights Reserved.</footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const blockchain = [];
+            const votesCount = JSON.parse(localStorage.getItem("votesCount")) || { "Candidate A": 0, "Candidate B": 0, "Candidate C": 0 };
+            
+            updateVoteCounts();
+
+            async function generateHash(block) {
+                const blockData = `${block.index}-${block.timestamp}-${block.vote}-${block.previousHash}`;
+                const encoder = new TextEncoder();
+                const data = encoder.encode(blockData);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            async function createBlock(vote) {
+                const index = blockchain.length + 1; 
+                const timestamp = new Date().toLocaleString();
+                const previousHash = blockchain.length > 0 ? blockchain[blockchain.length - 1].hash : "00000000000000000000000000000000000000000000000000000000000000000";
+                const block = { index, timestamp, vote, previousHash };
+                block.hash = await generateHash(block);
+                return block; 
+            }
+
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#00d1b2';
+                notification.style.color = '#fff';
+                notification.style.padding = '10px';
+                notification.style.borderRadius = '5px';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 3000);
+            }
+
+           async function castVote(candidate) {
+               if (!votesCount.hasOwnProperty(candidate)) {
+                   showNotification("Invalid candidate!");
+                   return; 
+               }
+               
+               if (localStorage.getItem("hasVoted")) {
+                   showNotification("You have already voted! No double voting allowed.");
+                   return; 
+               }
+               
+               votesCount[candidate]++;
+               localStorage.setItem("hasVoted", "true");
+               localStorage.setItem("votesCount", JSON.stringify(votesCount));
+
+               const block = await createBlock(candidate); 
+               blockchain.push(block);
+               showNotification(`You voted for ${candidate}.`);
+
+               updateVoteCounts();
+               renderBlockchain();
+           }
+
+           function updateVoteCounts() {
+               document.getElementById("countA").textContent = votesCount["Candidate A"];
+               document.getElementById("countB").textContent = votesCount["Candidate B"];
+               document.getElementById("countC").textContent = votesCount["Candidate C"];
+           }
+
+           function renderBlockchain() {
+               const blockchainDiv = document.getElementById("blockchain");
+               blockchainDiv.innerHTML = ""; // Clear previous visualization
+               blockchain.forEach(block => {
+                   const blockDiv = document.createElement("div");
+                   blockDiv.classList.add("block");
+                   blockDiv.innerHTML = `
+                       <h3>Block #${block.index}</h3>
+                       <p><strong>Timestamp:</strong> ${block.timestamp}</p>
+                       <p><strong>Vote:</strong> ${block.vote}</p>
+                       <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
+                       <p><strong>Hash:</strong> ${block.hash}</p>
+                   `;
+                   blockchainDiv.appendChild(blockDiv);
+               });
+           }
+
+           window.castVote = castVote; // Make function accessible globally
+       });
+    </script>
+</body>
+</html>
