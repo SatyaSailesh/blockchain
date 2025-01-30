@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
-        /* General Styles */
+        
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('voteback.jpg'); /* Replace with your image */
+            background-image: url('voteback.jpg'); 
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -236,7 +236,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">
-            <img src="logo.png" alt="Blockchain Voting Logo"> <!-- Replace with your logo file -->
+            <img src="logo.png" alt="Blockchain Voting Logo"> 
             <span>Blockchain Voting</span>
         </div>
         <ul>
@@ -339,7 +339,7 @@
             const lang = document.getElementById("language-select").value;
             const selectedLang = translations[lang];
 
-            // Update navbar links
+            
             document.querySelector('.navbar .logo span').textContent = selectedLang["navbar-title"];
             document.querySelectorAll('.navbar ul li a').forEach((item, index) => {
                 const navKeys = ['nav-home', 'nav-about', 'nav-services', 'nav-help', 'nav-contact'];
@@ -364,7 +364,7 @@
     const password = document.getElementById('password').value;
 
     if (username && password) {
-        // Show modal only after clicking login
+        
         document.getElementById("loginModal").style.display = "flex";
     } else {
         alert("Please enter both username and password.");
@@ -373,11 +373,11 @@
 
 function closeModal() {
     document.getElementById("loginModal").style.display = "none";
-    window.location.href = 'demooo.html'; // Redirect after pressing OK
+    window.location.href = 'demooo.html'; 
 }
 
         
-        // Initialize default language
+      
         changeLanguage();
 
     </script>
