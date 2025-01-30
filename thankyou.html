@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Voting!</title>
+    <style>
+        /* Basic reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack children vertically */
+            min-height: 100vh; /* Ensure body takes full height */
+            background-image: url('thankyou1.jpg'); /* Set your background image here */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent repeating */
+            color: #fff;
+            text-align: center;
+        }
+
+        .content {
+            flex: 1; /* Allow this section to grow and take up available space */
+            display: flex; /* Use flexbox for centering content */
+            flex-direction: column; /* Stack children vertically */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0c0c0c;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+
+        .button {
+            padding: 15px 30px; /* Button padding */
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #0d6efd, #00d1b2);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; /* Remove underline from link */
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            margin-top: auto; /* Push footer to bottom */
+            font-size: 0.9rem;
+            color: #ddd; /* Lighter color for footer text */
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Thank You for Voting!</h1>
+        <p>Your vote has been successfully registered.</p>
+        <p>We appreciate your participation in the democratic process!</p>
+        
+        <a href="login1.html" class="button">Return to Voting Page</a>
+    </div>
+
+    <footer>&copy; 2025 Blockchain Voting System. All Rights Reserved.</footer>
+</body>
+</html>
